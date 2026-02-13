@@ -28,7 +28,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* Custom Heart Cursor */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: linear-gradient(135deg, var(--bg-gradient-1) 0%, #ffffff 50%, var(--bg-gradient-2) 100%);
@@ -42,26 +41,8 @@
             cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><text y='20' font-size='20'>❤️</text></svg>"), auto;
         }
 
-        /* Screen Shake Animation (For angry mode) */
-        @keyframes earthquake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-        .angry-shake {
-            animation: earthquake 0.5s;
-        }
-
         /* =========================================
-           2. ANIMATIONS (Trail & Floating)
+           2. ANIMATIONS & BACKGROUND
            ========================================= */
         .trail-heart {
             position: absolute;
@@ -72,7 +53,6 @@
             z-index: 9999;
         }
 
-        /* Random Floating Emojis */
         .floating-emoji {
             position: absolute;
             bottom: -50px;
@@ -94,9 +74,6 @@
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* =========================================
-           3. BACKGROUND
-           ========================================= */
         .blob {
             position: absolute;
             filter: blur(80px);
@@ -111,14 +88,13 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 500px; height: 500px;
+            width: 300px; height: 300px;
             background: radial-gradient(circle, rgba(225, 29, 72, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
             border-radius: 50%;
             z-index: 0;
             animation: pulse-bg 3s infinite ease-in-out;
             pointer-events: none;
         }
-        
         .heart-bg svg { width: 100%; height: 100%; fill: rgba(225, 29, 72, 0.05); }
 
         @keyframes pulse-bg {
@@ -134,7 +110,7 @@
         }
 
         /* =========================================
-           4. MAIN CARD UI
+           3. MAIN CARD UI
            ========================================= */
         .card {
             position: relative;
@@ -150,6 +126,7 @@
             box-shadow: 0 25px 50px -12px rgba(225, 29, 72, 0.15);
             text-align: center;
             transition: all 0.3s ease;
+            overflow: hidden;
         }
 
         .step-badge {
@@ -182,59 +159,57 @@
         }
 
         /* =========================================
-           5. INTERACTIVE ELEMENTS
+           4. INTERACTIVE ELEMENTS
            ========================================= */
-        .slider-container { margin-bottom: 30px; }
+        .slider-container { margin-bottom: 30px; position: relative; padding: 10px; }
         
+        #dynamicEmoji {
+            font-size: 3rem; display: block; margin-bottom: 15px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
         input[type=range] {
-            -webkit-appearance: none; width: 100%; height: 12px;
-            background: #e2e8f0; border-radius: 10px; outline: none;
-            cursor: pointer;
+            -webkit-appearance: none; width: 100%; height: 14px;
+            background: linear-gradient(to right, #e2e8f0 0%, #e2e8f0 100%);
+            border-radius: 15px; outline: none; cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            transition: background 0.1s;
         }
 
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; appearance: none;
-            width: 28px; height: 28px; border-radius: 50%;
-            background: var(--primary); 
-            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.4);
-            transition: transform 0.2s;
+            width: 42px; height: 42px; border: none;
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E11D48'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>") no-repeat center center;
+            background-size: contain;
             cursor: pointer;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 4px 6px rgba(225, 29, 72, 0.3));
         }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
         .btn-container {
             display: flex; gap: 12px; justify-content: center;
-            position: relative; min-height: 56px; 
-            width: 100%;
-            align-items: center; /* Centers items vertically */
+            position: relative; min-height: 56px; width: 100%; align-items: center;
         }
 
         .btn {
             padding: 16px 20px; border-radius: 14px;
             font-weight: 700; font-size: 0.95rem; 
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            border: none; outline: none; flex: 1;
-            white-space: nowrap; 
-            cursor: pointer;
+            border: none; outline: none; flex: 1; white-space: nowrap; cursor: pointer;
         }
 
         .btn-primary {
             background: var(--primary); color: white;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
-            /* Important for the growing effect to anchor center */
-            transform-origin: center; 
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25); transform-origin: center; 
         }
-        .btn-primary:hover {
-            box-shadow: 0 8px 16px rgba(225, 29, 72, 0.35);
-        }
+        .btn-primary:hover { box-shadow: 0 8px 16px rgba(225, 29, 72, 0.35); }
 
         .btn-secondary {
-            background: #F1F5F9; 
-            color: var(--text-main);
-            border: 2px solid #CBD5E1; 
+            background: #F1F5F9; color: var(--text-main); border: 2px solid #CBD5E1; 
         }
         .btn-secondary:active { transform: scale(0.95); }
 
-        /* Animations */
         @keyframes shake {
             0% { transform: translateX(0); }
             25% { transform: translateX(-5px) rotate(-2deg); }
@@ -244,23 +219,15 @@
         }
         .shake-it {
             animation: shake 0.3s ease-in-out;
-            background: #ffe4e6 !important; 
-            border-color: #ff1f1f !important;
+            background: #ffe4e6 !important; border-color: #ff1f1f !important;
         }
 
         .float-msg {
-            position: fixed;
-            color: white;
-            background: #E11D48;
-            font-weight: 700;
-            font-size: 0.85rem;
-            pointer-events: none;
-            z-index: 9999;
-            animation: floatUp 1.5s forwards;
-            padding: 8px 16px;
-            border-radius: 50px;
-            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.3);
-            white-space: nowrap;
+            position: fixed; color: white; background: #E11D48;
+            font-weight: 700; font-size: 0.85rem; pointer-events: none;
+            z-index: 9999; animation: floatUp 1.5s forwards;
+            padding: 8px 16px; border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.3); white-space: nowrap;
         }
 
         @keyframes floatUp {
@@ -270,17 +237,58 @@
             100% { transform: translateY(-60px) scale(0.9); opacity: 0; }
         }
 
+        /* --- TICKET & SUCCESS STYLES --- */
+        .ticket {
+            background: white; border: 2px dashed #E11D48;
+            padding: 20px; border-radius: 20px; margin: 20px auto;
+            max-width: 300px; transform: rotate(-2deg);
+            animation: float 3s infinite ease-in-out;
+            box-shadow: 0 10px 30px rgba(225, 29, 72, 0.1);
+        }
+        .ticket-header {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
+            color: #475569; margin-bottom: 10px; font-weight: 700;
+        }
+        .ticket-body {
+            font-size: 1.2rem; font-weight: 800; color: #0F172A; line-height: 1.4;
+        }
+        .typewriter {
+            font-family: 'Courier New', Courier, monospace; font-size: 0.9rem;
+            color: #E11D48; margin-top: 15px; min-height: 40px;
+        }
+
+        /* --- GIFT OVERLAY --- */
+        .gift-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(225, 29, 72, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            animation: fadeIn 0.5s;
+        }
+        
+        .gift-content {
+            text-align: center; color: white; padding: 20px;
+        }
+
+        .coupon {
+            background: white; color: #E11D48;
+            padding: 20px; width: 300px; margin: 20px auto;
+            border-radius: 15px; border: 2px dashed #000;
+            transform: rotate(-3deg);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: pulse-bg 2s infinite;
+        }
+        .coupon-header { font-weight: 800; font-size: 1.2rem; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+        .coupon-body { font-size: 1.5rem; font-weight: 800; line-height: 1.4; }
+
         .view { display: none; animation: fadeIn 0.4s ease forwards; }
         .view.active { display: block; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        .success-icon {
-            width: 72px; height: 72px; background: #ECFDF5;
-            color: #10B981; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center;
-            font-size: 2rem; margin: 0 auto 24px auto;
         }
     </style>
 </head>
@@ -300,49 +308,99 @@
         <source src="https://res.cloudinary.com/daae2xfsr/video/upload/v1771010203/Cupid_s_Chokehold___Breakfast_in_America_-_Gym_Class_Heroes_youtube_uttnpq.mp3" type="audio/mpeg">
     </audio>
 
+    <div id="giftOverlay" class="gift-overlay">
+        <div class="gift-content">
+            <div style="font-size: 5rem; animation: float 3s infinite;">🥰</div>
+            <h1 style="color: white; font-size: 2.5rem; text-transform: uppercase;">Gift Unlocked!</h1>
+            <p style="color: white; opacity: 0.9; font-size: 1.2rem;">Online delivery failed...<br>Physical delivery required immediately!</p>
+            
+            <div class="coupon">
+                <div class="coupon-header">OFFICIAL COUPON</div>
+                <div class="coupon-body">
+                    ONE BIG<br>TIGHT HUG 🫂<br>
+                    <span style="font-size: 0.8rem; color: #444;">+ Unlimited Kisses !!😚</span>
+                </div>
+            </div>
+            
+            <p style="font-size: 0.9rem; margin-top: 20px; color: rgba(255,255,255,0.7);">(Come here and claim it!)</p>
+            <button class="btn btn-secondary" onclick="document.getElementById('giftOverlay').style.display='none'" style="margin-top: 20px; color: #E11D48; background: white; border: none;">Okay, I'm coming! 🏃‍♀️</button>
+        </div>
+    </div>
+
     <div class="card" id="mainCard">
         
         <div class="view active" id="view0">
             <div style="font-size: 3rem; margin-bottom: 20px; cursor: pointer;" onclick="miniConfetti()">💌</div>
-            <h1>Hey Lavanya</h1>
-            <p>I have a few important questions for you today. Are you ready?</p>
-            <button class="btn btn-primary" onclick="nextView(1)" style="width: 100%;">Let's Start</button>
+            <h1>Hey Piranha 🐟 !</h1>
+            <p>I have a few important questions for you today. <br>Are you ready?</p>
+            <button class="btn btn-primary" onclick="nextView('viewPiranha')" style="width: 100%;">Let's Start</button>
         </div>
 
-        <div class="view" id="view1">
-            <span class="step-badge">Question 1 / 4</span>
-            <h1>The Agreement</h1>
-            <p>Do you agree to keep tolerating me, even when I'm being annoying or cracking bad jokes?</p>
+        <div class="view" id="viewPiranha">
+            <span class="step-badge">Safety First</span>
+            <h1>The Piranha Clause 🐟</h1>
+            <p>Since you get angry and bite me like a Piranha... do you promise to bite me <b>gently</b> from now on?</p>
             <div class="btn-container">
-                <button class="btn btn-primary" onclick="nextView(2)">I Agree</button>
-                <button class="btn btn-secondary" onclick="handleNoClick(this)">No way</button>
+                <button class="btn btn-primary" onclick="nextView('viewIrritate')">Okay, just a nibble</button>
+                <button class="btn btn-secondary" onclick="handleNoClick(this)">I will eat you!</button>
             </div>
         </div>
 
-        <div class="view" id="view2">
-            <span class="step-badge">Question 2 / 4</span>
-            <h1>The Contract</h1>
-            <p>Do you promise to accompany me on random food dates and listen to my endless yapping?</p>
+        <div class="view" id="viewIrritate">
+            <span class="step-badge">Lifetime Headache</span>
+            <h1>The Annoyance Deal</h1>
+            <p>I am going to irritate you for the rest of your life. Do you agree to handle my nonsense?</p>
             <div class="btn-container">
-                <button class="btn btn-primary" onclick="nextView(3)">I Promise</button>
-                <button class="btn btn-secondary" onclick="handleNoClick(this)">Nope</button>
+                <button class="btn btn-primary" onclick="nextView('viewListening')">Fine, I agree</button>
+                <button class="btn btn-secondary" onclick="handleNoClick(this)">Save me!</button>
             </div>
         </div>
 
-        <div class="view" id="view3">
-            <span class="step-badge">Question 3 / 4</span>
+        <div class="view" id="viewListening">
+            <span class="step-badge">Hearing Test</span>
+            <h1>Selective Hearing</h1>
+            <p>Since you <b>never</b> listen to me... do you promise to listen to at least 1% of what I say?</p>
+            <div class="btn-container">
+                <button class="btn btn-primary" onclick="nextView('viewMood')">I'll try my best</button>
+                <button class="btn btn-secondary" onclick="handleNoClick(this)">Huh? What?</button>
+            </div>
+        </div>
+
+        <div class="view" id="viewMood">
+            <span class="step-badge">Danger Zone</span>
+            <h1>The Mood Swings</h1>
+            <p>You go from "Sweet Angel" to "Angry Piranha" in 0.5 seconds. Do I get extra hugs for surviving this?</p>
+            <div class="btn-container">
+                <button class="btn btn-primary" onclick="nextView('viewRoast')">Yes, extra hugs!</button>
+                <button class="btn btn-secondary" onclick="handleNoClick(this)">No, suffer.</button>
+            </div>
+        </div>
+
+        <div class="view" id="viewRoast">
+            <span class="step-badge">License Agreement</span>
+            <h1>Roasting Permit</h1>
+            <p>I love annoying you. Do you grant me a lifetime license to roast you (even if you bite me)?</p>
+            <div class="btn-container">
+                <button class="btn btn-primary" onclick="nextView('viewLoveMeter')">Approved ✅</button>
+                <button class="btn btn-secondary" onclick="handleNoClick(this)">Access Denied</button>
+            </div>
+        </div>
+
+        <div class="view" id="viewLoveMeter">
+            <span class="step-badge">The Final Test</span>
             <h1>The Love Meter</h1>
-            <p>How much do you love me? (Be honest!)</p>
+            <p>How much do you love me?</p>
             
             <div class="slider-container">
-                <input type="range" min="1" max="100" value="50" class="slider" id="loveRange" oninput="updateLoveText(this.value)">
-                <div class="love-status" id="loveText">Use the slider!</div>
+                <span id="dynamicEmoji">😐</span>
+                <input type="range" min="1" max="100" value="0" class="slider" id="loveRange" oninput="updateLoveText(this.value)">
+                <div class="love-status" id="loveText">Drag the heart!</div>
             </div>
 
-            <button class="btn btn-primary" id="sliderNextBtn" onclick="checkSlider()" style="width: 100%; opacity: 0.5; pointer-events: none;">Drag it higher! 😉</button>
+            <button class="btn btn-primary" id="sliderNextBtn" onclick="checkSlider()" style="width: 100%; opacity: 0.5; pointer-events: none;">Prove it! 😉</button>
         </div>
 
-        <div class="view" id="view4">
+        <div class="view" id="viewProposal">
             <span class="step-badge">Final Question</span>
             <h1>The Proposal</h1>
             <p>Okay, you've passed the test. <br><strong>Will you be my Valentine?</strong> 🌹</p>
@@ -352,19 +410,28 @@
             </div>
         </div>
 
-        <div class="view" id="view5">
-            <div class="success-icon">✓</div>
-            <h1>It's Official!</h1>
-            <p>Best decision ever. <br>I love you, Lavanya! ❤️</p>
-            <div style="font-size: 0.85rem; opacity: 0.7; margin-top: 10px;">(Music is playing... 🎵)</div>
+        <div class="view" id="viewSuccess">
+            <div style="font-size: 4rem;">💍</div>
+            <h1>She Said YES!</h1>
+            
+            <div class="ticket">
+                <div class="ticket-header">OFFICIAL TICKET</div>
+                <div class="ticket-body">
+                    Feb 14, 2026<br>
+                    Lavanya & Ayush<br>
+                    <span style="font-size: 0.9rem; color: #E11D48;">Status: Piranha Captured 🐟💝</span>
+                </div>
+            </div>
+
+            <div class="typewriter" id="typewriterText"></div>
+
+            <button class="btn btn-primary" onclick="claimGift()" style="margin-top: 20px;">Claim Your Gift 🎉</button>
         </div>
 
     </div>
 
     <script>
-        // ==========================================
-        // MOUSE TRAIL LOGIC
-        // ==========================================
+        // MOUSE TRAIL
         let lastMove = 0;
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
@@ -379,93 +446,94 @@
             setTimeout(() => { heart.remove(); }, 1000);
         });
 
-        // ==========================================
-        // BACKGROUND FLOATING EMOJIS (NEW!)
-        // ==========================================
+        // FLOATING EMOJIS
         const floatEmojis = ['🧸', '🌸', '✨', '🍫', '🧁', '🌹'];
         setInterval(() => {
             const el = document.createElement('div');
             el.innerText = floatEmojis[Math.floor(Math.random() * floatEmojis.length)];
             el.className = 'floating-emoji';
             el.style.left = Math.random() * 100 + 'vw';
-            el.style.animationDuration = (Math.random() * 5 + 5) + 's'; // 5-10s duration
+            el.style.animationDuration = (Math.random() * 5 + 5) + 's';
             document.body.appendChild(el);
-            
-            // Cleanup
             setTimeout(() => { el.remove(); }, 10000);
-        }, 1500); // New emoji every 1.5s
+        }, 1500);
 
-        // ==========================================
-        // APP LOGIC
-        // ==========================================
+        // LOGIC
         const sassyMessages = [
             "Nice try! 😂", 
-            "Button Disabled 🚫", 
-            "Error: You love me! ❤️", 
-            "System says NO to your NO",
-            "Are you sure? 🤔",
+            "Don't even think about it! 🚫", 
+            "Error: You love me too much! ❤️", 
+            "Piranhas can't say No 🐟",
+            "Are you sure? 🤔", 
             "Don't lie to yourself! 😉",
-            "This button is for display only 🖼️",
-            "Miss click? 🤪"
+            "Click the RED one! 🔴", 
+            "Miss click? 🤪",
+            "Nope. Not an option.",
+            "I know you want to say Yes 😘"
         ];
 
         let noClickCount = 0;
         let yesScale = 1;
 
-        function nextView(id) {
-            // Reset Yes Button Scale on new view
+        function nextView(viewId) {
             yesScale = 1;
-            const activeYesBtn = document.querySelector('.view.active .btn-primary');
-            if(activeYesBtn) activeYesBtn.style.transform = `scale(1)`;
+            const activeYes = document.querySelector('.view.active .btn-primary');
+            if(activeYes) activeYes.style.transform = 'scale(1)';
 
             document.querySelector('.view.active').classList.remove('active');
-            document.getElementById('view' + id).classList.add('active');
-            
-            // Mini Confetti Reward
+            document.getElementById(viewId).classList.add('active');
             miniConfetti();
         }
 
         function updateLoveText(val) {
             const text = document.getElementById('loveText');
+            const emoji = document.getElementById('dynamicEmoji');
             const btn = document.getElementById('sliderNextBtn');
+            const slider = document.getElementById('loveRange');
+
+            const percent = val; 
+            slider.style.background = `linear-gradient(to right, #E11D48 0%, #E11D48 ${percent}%, #e2e8f0 ${percent}%, #e2e8f0 100%)`;
+
+            const scale = 1 + (val / 100);
+            emoji.style.transform = `scale(${scale})`;
+
             if (val < 20) {
-                text.innerText = "Is that it? 🥺";
+                text.innerText = "Too low! 🤨";
+                emoji.innerText = "🤨";
                 btn.style.opacity = "0.5"; btn.style.pointerEvents = "none";
-                btn.innerText = "Drag it higher! 😉";
+                btn.innerText = "Drag it higher!";
             } else if (val < 50) {
-                text.innerText = "You can do better... 😐";
+                text.innerText = "I deserve more... 😐";
+                emoji.innerText = "😐";
                 btn.style.opacity = "0.5"; btn.style.pointerEvents = "none";
             } else if (val < 80) {
                 text.innerText = "Getting warmer! 🔥";
+                emoji.innerText = "😏";
                 btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
                 btn.innerText = "Next Question";
             } else if (val < 100) {
-                text.innerText = "So much love! ❤️";
+                text.innerText = "Almost there! ❤️";
+                emoji.innerText = "🥰";
                 btn.style.opacity = "1"; btn.innerText = "Next Question";
             } else {
                 text.innerText = "TO INFINITY! 🚀💖";
+                emoji.innerText = "🤩";
                 btn.innerText = "Perfect! Continue";
                 miniConfetti();
             }
         }
-        function checkSlider() { nextView(4); }
+        function checkSlider() { nextView('viewProposal'); }
 
         function handleNoClick(btn) {
             noClickCount++;
-            
-            // 1. Shake the button
             btn.classList.remove('shake-it');
             void btn.offsetWidth;
             btn.classList.add('shake-it');
 
-            // 2. Make the YES button bigger (Passive Aggressive Mode)
-            yesScale += 0.15; // Grow by 15% each time
-            const currentViewYesBtn = document.querySelector('.view.active .btn-primary');
-            if (currentViewYesBtn) {
-                currentViewYesBtn.style.transform = `scale(${yesScale})`;
-            }
+            yesScale += 0.15;
+            const currentYes = document.querySelector('.view.active .btn-primary');
+            if(currentYes) currentYes.style.transform = `scale(${yesScale})`;
 
-            // 3. Screen Shake on high counts
             if (noClickCount > 2) {
                 const card = document.getElementById('mainCard');
                 card.classList.remove('angry-shake');
@@ -473,60 +541,85 @@
                 card.classList.add('angry-shake');
             }
 
-            // 4. Sarcastic Popup
             const msgText = sassyMessages[Math.floor(Math.random() * sassyMessages.length)];
             const rect = btn.getBoundingClientRect();
-            
             const msg = document.createElement('div');
             msg.className = 'float-msg';
             msg.innerText = msgText;
             msg.style.position = 'fixed';
             msg.style.left = (rect.left + (rect.width/2) - 60) + 'px'; 
             msg.style.top = (rect.top - 40) + 'px';
-            
             document.body.appendChild(msg);
             setTimeout(() => { msg.remove(); }, 1500);
         }
 
+        // --- FINALE LOGIC ---
         function finish() {
-            nextView(5);
+            nextView('viewSuccess');
             const music = document.getElementById('bgMusic');
             music.volume = 0.5;
             music.play().then(() => console.log("Music started")).catch(e => console.log("Audio play failed:", e));
             triggerConfetti();
+            typeWriter();
         }
 
-        // --- VISUAL EFFECTS HELPERS ---
-        
+        function typeWriter() {
+            const text = "Official Piranha Tamer. \nLifetime supply of hugs & kisses included.";
+            const el = document.getElementById('typewriterText');
+            let i = 0;
+            el.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                    i++;
+                    setTimeout(type, 50);
+                }
+            }
+            type();
+        }
+
+        function claimGift() {
+            // SHOW THE OVERLAY
+            document.getElementById('giftOverlay').style.display = 'flex';
+            
+            // EXPLODE CONFETTI (FOOD + HEARTS)
+            const foodEmojis = ['🍔', '🍟', '🍕', '🌭', '🍗', '🍜', '🍩', '❤️', '🤗'];
+            
+            function fire() {
+                confetti({
+                    particleCount: 50,
+                    spread: 100,
+                    origin: { y: 0.6 },
+                    scalar: 2,
+                    shapes: ['emoji'],
+                    shapeOptions: {
+                        emoji: {
+                            value: foodEmojis
+                        }
+                    }
+                });
+            }
+            fire();
+            setTimeout(fire, 300);
+            setTimeout(fire, 600);
+        }
+
         function miniConfetti() {
-            confetti({
-                particleCount: 30,
-                spread: 50,
-                origin: { y: 0.6 },
-                colors: ['#E11D48', '#FDA4AF'] 
-            });
+            confetti({ particleCount: 30, spread: 50, origin: { y: 0.6 }, colors: ['#E11D48', '#FDA4AF'] });
         }
 
         function triggerConfetti() {
             const count = 200;
             const defaults = { origin: { y: 0.7 } };
             function fire(particleRatio, opts) {
-                confetti(Object.assign({}, defaults, opts, {
-                    particleCount: Math.floor(count * particleRatio)
-                }));
+                confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }));
             }
             fire(0.25, { spread: 26, startVelocity: 55, colors: ['#E11D48', '#FDA4AF'] });
             fire(0.2, { spread: 60, colors: ['#E11D48', '#FFFFFF'] });
             fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
             fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
             fire(0.1, { spread: 120, startVelocity: 45 });
-            
-            setInterval(() => {
-                 confetti({
-                    particleCount: 50, spread: 80, origin: { y: 0.6 },
-                    colors: ['#E11D48', '#FDA4AF'] 
-                });
-            }, 2500);
+            setInterval(() => { confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 }, colors: ['#E11D48', '#FDA4AF'] }); }, 2500);
         }
     </script>
 </body>
