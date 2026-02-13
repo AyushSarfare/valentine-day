@@ -42,12 +42,8 @@
         }
 
         /* =========================================
-           2. ANIMATIONS
+           2. ANIMATIONS & BACKGROUND
            ========================================= */
-        @keyframes floatFade {
-            0% { transform: translateY(0) scale(1); opacity: 0.8; }
-            100% { transform: translateY(-30px) scale(0); opacity: 0; }
-        }
         .trail-heart {
             position: absolute; pointer-events: none; color: #E11D48; font-size: 16px;
             animation: floatFade 1s linear forwards; z-index: 9999;
@@ -57,25 +53,18 @@
             position: absolute; bottom: -50px; font-size: 24px;
             animation: floatUpSlow 8s linear forwards; opacity: 0.7; z-index: 1; pointer-events: none;
         }
+
+        @keyframes floatFade {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-30px) scale(0); opacity: 0; }
+        }
+
         @keyframes floatUpSlow {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Shine Animation */
-        @keyframes shine-loop {
-            0% { left: -150%; } 50% { left: 150%; } 100% { left: 150%; }
-        }
-
-        /* Fade In Animation */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* =========================================
-           3. UI COMPONENTS
-           ========================================= */
         .blob {
             position: absolute; filter: blur(80px); z-index: 0; opacity: 0.5;
             animation: float 10s infinite ease-in-out;
@@ -83,6 +72,33 @@
         .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #FDA4AF; }
         .blob-2 { bottom: -10%; right: -10%; width: 45vw; height: 45vw; background: #FECDD3; animation-delay: 5s; }
 
+        .heart-bg {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(225, 29, 72, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: pulse-bg 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+        .heart-bg svg { width: 100%; height: 100%; fill: rgba(225, 29, 72, 0.05); }
+
+        @keyframes pulse-bg {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+        }
+
+        /* Shine Animation */
+        @keyframes shine-loop {
+            0% { left: -150%; } 50% { left: 150%; } 100% { left: 150%; }
+        }
+
+        /* =========================================
+           3. MAIN CARD UI
+           ========================================= */
         .card {
             position: relative; z-index: 10; background: var(--glass-bg);
             backdrop-filter: blur(24px); border: 1px solid var(--glass-border);
@@ -199,12 +215,18 @@
         .prize-sub { font-size: 0.9rem; color: #444; margin-top: 5px; }
         #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: pointer; touch-action: none; }
 
+        /* Dynamic Text */
+        .instruction-text {
+            color: rgba(255,255,255,0.9); font-size: 1rem; margin-top: 15px; font-weight: 600;
+            transition: all 0.3s;
+        }
+
         .view { display: none; animation: fadeIn 0.4s ease forwards; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Fade In Class */
         .fade-in-element { animation: fadeInUp 1s forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -220,7 +242,6 @@
         <div class="gift-content">
             <div style="font-size: 4rem; margin-bottom: 10px;">🎁</div>
             <h1 style="color: white; font-size: 2rem; margin: 0; font-weight: 800; line-height: 1.2;">YOUR GIFT</h1>
-            <p style="color: rgba(255,255,255,0.9); font-size: 1rem; margin-top: 5px;">Scratch below to reveal!</p>
             
             <div class="scratch-container">
                 <div class="scratch-prize">
@@ -230,7 +251,8 @@
                 <canvas id="scratchCanvas"></canvas>
             </div>
             
-            <p style="font-size: 0.9rem; margin-top: 15px; color: rgba(255,255,255,0.8);">(Come here and claim it now!)</p>
+            <p id="instructionText" class="instruction-text">Scratch the silver part above! 👆✨</p>
+            
             <button class="btn btn-secondary" onclick="document.getElementById('giftOverlay').style.display='none'" style="margin-top: 20px; color: #E11D48; background: white; border: none; padding: 12px 30px; font-size: 1rem;">Okay, I'm coming! 🏃‍♀️</button>
         </div>
     </div>
@@ -277,7 +299,7 @@
         <div class="view" id="viewMood">
             <span class="step-badge">Danger Zone</span>
             <h1>The Mood Swings 🤕</h1>
-            <p>You go from "Sweet Angel" to "Angry Piranha" in 0.5 seconds. Do I get extra hugs for surviving this?</p>
+            <>You go from "<b>Sweet Angel</b>"" to "<b>Angry Piranha</b>" in 0.5 seconds. Do I get extra hugs for surviving this?</p>
             <div class="btn-container">
                 <button class="btn btn-primary" onclick="nextView('viewRoast')">Yes, extra hugs!</button>
                 <button class="btn btn-secondary" onclick="handleNoClick(this)">No, suffer.</button>
@@ -287,7 +309,7 @@
         <div class="view" id="viewRoast">
             <span class="step-badge">License Agreement</span>
             <h1>Roasting Permit 😉</h1>
-            <p>I love annoying you. Do you grant me a lifetime license to roast you (even if you bite me)?</p>
+            <p>I love annoying you. Do you grant me a lifetime license to roast you?</p>
             <div class="btn-container">
                 <button class="btn btn-primary" onclick="nextView('viewLoveMeter')">Approved ✅</button>
                 <button class="btn btn-secondary" onclick="handleNoClick(this)">Access Denied</button>
@@ -296,7 +318,7 @@
 
         <div class="view" id="viewLoveMeter">
             <span class="step-badge">The Final Test</span>
-            <h1>The Love Meter 🌡️</h1>
+            <h1>The Love Meter 😍</h1>
             <p>How much do you love me?</p>
             <div class="slider-container">
                 <span id="dynamicEmoji">😐</span>
@@ -320,7 +342,7 @@
             <div id="timerContainer">
                 <div style="font-size: 3rem;">🎵</div>
                 <div class="music-timer" id="musicTimer">3</div>
-                <p>Loading our song...</p>
+                <p>A Song for you plays in...</p>
             </div>
 
             <div id="celebrationContent" style="display: none;">
@@ -338,7 +360,7 @@
 
                 <div class="typewriter" id="typewriterText"></div>
 
-                <button class="btn btn-premium-shine fade-in-element" onclick="claimGift()" style="margin-top: 20px; width: 100%; padding: 18px 20px; font-size: 1.1rem; border-radius: 50px;">Claim Your Gift 🎉</button>
+                <button class="btn btn-premium-shine fade-in-element" onclick="claimGift()" style="margin-top: 20px; width: 100%; padding: 18px 20px; font-size: 1.1rem; border-radius: 50px;">Claim Your Gift 🫶🏻</button>
             </div>
         </div>
 
@@ -364,7 +386,7 @@
         }, 1500);
 
         // NAVIGATION
-        const sassyMessages = [ "Nice try! 😂", "Don't even think about it! 🚫", "Error: You love me! ❤️", "Piranhas can't say No 🐟", "Are you sure? 🤔", "Click the RED one! 🔴", "Miss click? 🤪", "I know you want to say Yes 😘" ];
+        const sassyMessages = [ "Koshish acchi thi! 😂", "Don't even think about it! 🚫", "Error: You love me! ❤️", "You don't have an option ! 😏", "Are you sure? 🤔", "Click the RED one! 🔴", "Chal..chal chal !! 🤟🏻", "I know you want to say Yes 😘" ];
         let noClickCount = 0; let yesScale = 1;
 
         function nextView(viewId) {
@@ -403,7 +425,7 @@
             emoji.style.transform = `scale(${1 + val/100})`;
             if (val < 20) { text.innerText = "Too low! 🤨"; emoji.innerText = "🤨"; btn.style.opacity = "0.5"; btn.style.pointerEvents = "none"; btn.innerText = "Drag it higher!"; }
             else if (val < 50) { text.innerText = "I deserve more... 😐"; emoji.innerText = "😐"; btn.style.opacity = "0.5"; btn.style.pointerEvents = "none"; }
-            else if (val < 80) { text.innerText = "Getting warmer! 🔥"; emoji.innerText = "😏"; btn.style.opacity = "1"; btn.style.pointerEvents = "auto"; btn.innerText = "Next Question"; }
+            else if (val < 80) { text.innerText = "Bas itna hee...? 🤨"; emoji.innerText = "😏"; btn.style.opacity = "1"; btn.style.pointerEvents = "auto"; btn.innerText = "Next Question"; }
             else { text.innerText = "TO INFINITY! 🚀💖"; emoji.innerText = "🤩"; btn.innerText = "Perfect! Continue"; miniConfetti(); }
         }
         function checkSlider() { nextView('viewProposal'); }
@@ -435,7 +457,6 @@
             music.volume = 0.5; music.play().catch(e => console.log("Audio play failed:", e));
             triggerConfetti();
             
-            // Show elements with delays
             const ticket = document.querySelector('.ticket');
             const btn = document.querySelector('.btn-premium-shine');
             const typeText = document.getElementById('typewriterText');
@@ -445,10 +466,7 @@
             
             typeWriter();
             
-            // Delay button reveal
-            setTimeout(() => {
-                btn.style.display = 'block';
-            }, 3000);
+            setTimeout(() => { btn.style.display = 'block'; }, 3000);
         }
 
         function typeWriter() {
@@ -473,7 +491,7 @@
             canvas.width = container.offsetWidth;
             canvas.height = container.offsetHeight;
 
-            ctx.fillStyle = '#C0C0C0'; 
+            ctx.fillStyle = '#dedede'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             ctx.fillStyle = '#666'; ctx.font = '20px Arial'; ctx.textAlign = 'center';
@@ -516,6 +534,9 @@
             if ((transparentPixels / (pixels.length / 4)) * 100 > 40) {
                 canvas.style.transition = 'opacity 0.5s'; canvas.style.opacity = '0';
                 setTimeout(() => { canvas.style.display = 'none'; triggerConfetti(); }, 500);
+                
+                // CHANGE TEXT AFTER REVEAL
+                document.getElementById('instructionText').innerText = "Now come here and claim it! 🏃‍♀️💨";
             }
         }
 
@@ -528,6 +549,7 @@
             fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
             fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
             fire(0.1, { spread: 120, startVelocity: 45 });
+            setInterval(() => { confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 }, colors: ['#E11D48', '#FDA4AF'] }); }, 2500);
         }
     </script>
 </body>
