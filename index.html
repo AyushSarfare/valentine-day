@@ -53,21 +53,24 @@
             animation: floatFade 1s linear forwards; z-index: 9999;
         }
 
-        @keyframes floatUpSlow {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
-        }
         .floating-emoji {
             position: absolute; bottom: -50px; font-size: 24px;
             animation: floatUpSlow 8s linear forwards; opacity: 0.7; z-index: 1; pointer-events: none;
         }
+        @keyframes floatUpSlow {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
 
-        /* Shine Animation for Ticket & Button */
+        /* Shine Animation */
         @keyframes shine-loop {
-            0% { left: -150%; }
-            50% { left: 150%; }
-            100% { left: 150%; }
+            0% { left: -150%; } 50% { left: 150%; } 100% { left: 150%; }
+        }
+
+        /* Fade In Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* =========================================
@@ -113,6 +116,7 @@
             color: white; box-shadow: 0 10px 25px rgba(225, 29, 72, 0.4);
             position: relative; overflow: hidden; border: none;
             animation: pulse-pop 2s infinite ease-in-out;
+            display: none; /* Hidden initially */
         }
         .btn-premium-shine::after {
             content: ""; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
@@ -120,9 +124,7 @@
             transform: skewX(-20deg); animation: shine-loop 3s infinite;
         }
         @keyframes pulse-pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 0 15px 35px rgba(225, 29, 72, 0.5); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); }
         }
 
         /* Slider */
@@ -150,10 +152,11 @@
         .shake-it { animation: shake 0.3s ease-in-out; background: #ffe4e6 !important; border-color: #ff1f1f !important; }
         @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px) rotate(-2deg); } 50% { transform: translateX(5px) rotate(2deg); } 75% { transform: translateX(-5px) rotate(-2deg); } 100% { transform: translateX(0); } }
 
-        /* --- OFFICIAL TICKET (With Shine) --- */
+        /* --- OFFICIAL TICKET --- */
         .ticket {
             background: white; border: 2px dashed #E11D48; padding: 20px; border-radius: 20px; margin: 20px auto;
             max-width: 300px; box-shadow: 0 10px 30px rgba(225, 29, 72, 0.1); position: relative; overflow: hidden;
+            display: none; /* Hidden initially */
         }
         .ticket::after {
             content: ""; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
@@ -163,7 +166,13 @@
         .ticket-header { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #475569; margin-bottom: 10px; font-weight: 700; }
         .ticket-body { font-size: 1.2rem; font-weight: 800; color: #0F172A; line-height: 1.4; }
 
-        .typewriter { font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; color: #E11D48; margin-top: 15px; min-height: 40px; }
+        .typewriter { font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; color: #E11D48; margin-top: 15px; min-height: 40px; display: none; }
+
+        /* --- TIMER --- */
+        .music-timer {
+            font-size: 2rem; font-weight: 800; color: #E11D48; margin: 40px 0;
+            animation: pulse-pop 1s infinite;
+        }
 
         /* --- GIFT OVERLAY --- */
         .gift-overlay {
@@ -173,22 +182,14 @@
             justify-content: center; align-items: center; padding: 20px;
             box-sizing: border-box; animation: fadeIn 0.3s ease-out;
         }
-        
         .gift-content { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; max-width: 400px; }
 
-        /* --- SCRATCH CARD CONTAINER --- */
+        /* --- SCRATCH CARD --- */
         .scratch-container {
-            position: relative;
-            width: 300px; height: 180px;
-            margin: 20px auto;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-            background: white;
-            border: 4px dashed #000;
+            position: relative; width: 300px; height: 180px; margin: 20px auto;
+            border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden; background: white; border: 4px dashed #000;
         }
-
-        /* The hidden prize underneath */
         .scratch-prize {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -196,16 +197,14 @@
         }
         .prize-text { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; line-height: 1.2; }
         .prize-sub { font-size: 0.9rem; color: #444; margin-top: 5px; }
-
-        /* The canvas covering it */
-        #scratchCanvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2; cursor: pointer; touch-action: none; /* Important for mobile */
-        }
+        #scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: pointer; touch-action: none; }
 
         .view { display: none; animation: fadeIn 0.4s ease forwards; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Fade In Class */
+        .fade-in-element { animation: fadeInUp 1s forwards; }
     </style>
 </head>
 <body>
@@ -213,13 +212,6 @@
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     
-    <div class="heart-bg">
-        <svg viewBox="0 0 32 29.6">
-            <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
-            c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z"/>
-        </svg>
-    </div>
-
     <audio id="bgMusic" loop>
         <source src="https://res.cloudinary.com/daae2xfsr/video/upload/v1771010203/Cupid_s_Chokehold___Breakfast_in_America_-_Gym_Class_Heroes_youtube_uttnpq.mp3" type="audio/mpeg">
     </audio>
@@ -325,21 +317,29 @@
         </div>
 
         <div class="view" id="viewSuccess">
-            <div style="font-size: 4rem;">💍</div>
-            <h1>She Said YES!</h1>
-            
-            <div class="ticket">
-                <div class="ticket-header">OFFICIAL TICKET</div>
-                <div class="ticket-body">
-                    Feb 14, 2026<br>
-                    Lavanya & Ayush<br>
-                    <span style="font-size: 0.9rem; color: #E11D48;">Status: Piranha Captured 🐟💝</span>
-                </div>
+            <div id="timerContainer">
+                <div style="font-size: 3rem;">🎵</div>
+                <div class="music-timer" id="musicTimer">3</div>
+                <p>Loading our song...</p>
             </div>
 
-            <div class="typewriter" id="typewriterText"></div>
+            <div id="celebrationContent" style="display: none;">
+                <div style="font-size: 4rem;" class="fade-in-element">💍</div>
+                <h1 class="fade-in-element">She Said YES!</h1>
+                
+                <div class="ticket fade-in-element">
+                    <div class="ticket-header">OFFICIAL TICKET</div>
+                    <div class="ticket-body">
+                        Feb 14, 2026<br>
+                        Lavanya & Ayush<br>
+                        <span style="font-size: 0.9rem; color: #E11D48;">Status: Piranha Captured 🐟💝</span>
+                    </div>
+                </div>
 
-            <button class="btn btn-premium-shine" onclick="claimGift()" style="margin-top: 20px; width: 100%; padding: 18px 20px; font-size: 1.1rem; border-radius: 50px;">Claim Your Gift 🎉</button>
+                <div class="typewriter" id="typewriterText"></div>
+
+                <button class="btn btn-premium-shine fade-in-element" onclick="claimGift()" style="margin-top: 20px; width: 100%; padding: 18px 20px; font-size: 1.1rem; border-radius: 50px;">Claim Your Gift 🎉</button>
+            </div>
         </div>
 
     </div>
@@ -348,29 +348,23 @@
         // MOUSE TRAIL
         let lastMove = 0;
         document.addEventListener('mousemove', function(e) {
-            const now = Date.now();
-            if (now - lastMove < 50) return; lastMove = now;
-            const heart = document.createElement('div');
-            heart.className = 'trail-heart'; heart.innerText = '❤️';
+            const now = Date.now(); if (now - lastMove < 50) return; lastMove = now;
+            const heart = document.createElement('div'); heart.className = 'trail-heart'; heart.innerText = '❤️';
             heart.style.left = e.pageX + 'px'; heart.style.top = e.pageY + 'px';
-            document.body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 1000);
+            document.body.appendChild(heart); setTimeout(() => { heart.remove(); }, 1000);
         });
 
         // FLOATING EMOJIS
         setInterval(() => {
             const emojis = ['🧸', '🌸', '✨', '🍫', '🧁', '🌹'];
-            const el = document.createElement('div');
-            el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            el.className = 'floating-emoji';
-            el.style.left = Math.random() * 100 + 'vw';
+            const el = document.createElement('div'); el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            el.className = 'floating-emoji'; el.style.left = Math.random() * 100 + 'vw';
             el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            document.body.appendChild(el);
-            setTimeout(() => { el.remove(); }, 10000);
+            document.body.appendChild(el); setTimeout(() => { el.remove(); }, 10000);
         }, 1500);
 
-        // NAVIGATION & LOGIC
-        const sassyMessages = [ "Nice try! 😂", "Don't even think about it! 🚫", "Error: You love me too much! ❤️", "Piranhas can't say No 🐟", "Are you sure? 🤔", "Click the RED one! 🔴", "Miss click? 🤪", "I know you want to say Yes 😘" ];
+        // NAVIGATION
+        const sassyMessages = [ "Nice try! 😂", "Don't even think about it! 🚫", "Error: You love me! ❤️", "Piranhas can't say No 🐟", "Are you sure? 🤔", "Click the RED one! 🔴", "Miss click? 🤪", "I know you want to say Yes 😘" ];
         let noClickCount = 0; let yesScale = 1;
 
         function nextView(viewId) {
@@ -394,12 +388,10 @@
             }
             const msgText = sassyMessages[Math.floor(Math.random() * sassyMessages.length)];
             const rect = btn.getBoundingClientRect();
-            const msg = document.createElement('div');
-            msg.className = 'float-msg'; msg.innerText = msgText;
+            const msg = document.createElement('div'); msg.className = 'float-msg'; msg.innerText = msgText;
             msg.style.position = 'fixed'; msg.style.left = (rect.left + (rect.width/2) - 60) + 'px'; 
             msg.style.top = (rect.top - 40) + 'px';
-            document.body.appendChild(msg);
-            setTimeout(() => { msg.remove(); }, 1500);
+            document.body.appendChild(msg); setTimeout(() => { msg.remove(); }, 1500);
         }
 
         function updateLoveText(val) {
@@ -416,13 +408,50 @@
         }
         function checkSlider() { nextView('viewProposal'); }
 
+        // --- FINALE LOGIC ---
         function finish() {
             nextView('viewSuccess');
+            
+            // Start Countdown
+            let timeLeft = 3;
+            const timerEl = document.getElementById('musicTimer');
+            const timerContainer = document.getElementById('timerContainer');
+            const celebration = document.getElementById('celebrationContent');
+            
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerContainer.style.display = 'none';
+                    celebration.style.display = 'block';
+                    startParty();
+                }
+            }, 1000);
+        }
+
+        function startParty() {
             const music = document.getElementById('bgMusic');
-            music.volume = 0.5; music.play().catch(e => console.log("Audio requires interaction"));
+            music.volume = 0.5; music.play().catch(e => console.log("Audio play failed:", e));
             triggerConfetti();
             
-            // Typewriter Effect
+            // Show elements with delays
+            const ticket = document.querySelector('.ticket');
+            const btn = document.querySelector('.btn-premium-shine');
+            const typeText = document.getElementById('typewriterText');
+            
+            ticket.style.display = 'block';
+            typeText.style.display = 'block';
+            
+            typeWriter();
+            
+            // Delay button reveal
+            setTimeout(() => {
+                btn.style.display = 'block';
+            }, 3000);
+        }
+
+        function typeWriter() {
             const text = "Official Piranha Tamer. \nLifetime supply of hugs & kisses included.";
             const el = document.getElementById('typewriterText');
             let i = 0; el.innerHTML = "";
@@ -441,33 +470,24 @@
             const ctx = canvas.getContext('2d');
             const container = document.querySelector('.scratch-container');
             
-            // Set canvas size to match container
             canvas.width = container.offsetWidth;
             canvas.height = container.offsetHeight;
 
-            // Fill with Silver
-            ctx.fillStyle = '#C0C0C0'; // Silver
+            ctx.fillStyle = '#C0C0C0'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Add Text
-            ctx.fillStyle = '#666';
-            ctx.font = '20px Arial';
-            ctx.textAlign = 'center';
+            ctx.fillStyle = '#666'; ctx.font = '20px Arial'; ctx.textAlign = 'center';
             ctx.fillText("SCRATCH HERE 💖", canvas.width/2, canvas.height/2);
 
-            // Scratch Logic
             let isDrawing = false;
 
             function scratch(x, y) {
                 ctx.globalCompositeOperation = 'destination-out';
-                ctx.beginPath();
-                ctx.arc(x, y, 20, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(x, y, 25, 0, Math.PI * 2); ctx.fill();
                 checkScratchCompletion();
             }
 
-            // Mouse Events
-            canvas.addEventListener('mousedown', (e) => { isDrawing = true; });
+            canvas.addEventListener('mousedown', () => { isDrawing = true; });
             canvas.addEventListener('mouseup', () => { isDrawing = false; });
             canvas.addEventListener('mousemove', (e) => {
                 if (!isDrawing) return;
@@ -475,12 +495,10 @@
                 scratch(e.clientX - rect.left, e.clientY - rect.top);
             });
 
-            // Touch Events (Mobile)
             canvas.addEventListener('touchstart', (e) => { isDrawing = true; e.preventDefault(); }, {passive: false});
             canvas.addEventListener('touchend', () => { isDrawing = false; });
             canvas.addEventListener('touchmove', (e) => {
-                if (!isDrawing) return;
-                e.preventDefault(); 
+                if (!isDrawing) return; e.preventDefault();
                 const rect = canvas.getBoundingClientRect();
                 const touch = e.touches[0];
                 scratch(touch.clientX - rect.left, touch.clientY - rect.top);
@@ -493,18 +511,11 @@
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const pixels = imageData.data;
             let transparentPixels = 0;
+            for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) transparentPixels++; }
             
-            for (let i = 3; i < pixels.length; i += 4) {
-                if (pixels[i] === 0) transparentPixels++;
-            }
-
-            const percentage = (transparentPixels / (pixels.length / 4)) * 100;
-            
-            if (percentage > 40) { // If 40% scratched
-                canvas.style.transition = 'opacity 0.5s';
-                canvas.style.opacity = '0'; // Fade out
-                setTimeout(() => { canvas.style.display = 'none'; }, 500);
-                triggerConfetti(); // Boom!
+            if ((transparentPixels / (pixels.length / 4)) * 100 > 40) {
+                canvas.style.transition = 'opacity 0.5s'; canvas.style.opacity = '0';
+                setTimeout(() => { canvas.style.display = 'none'; triggerConfetti(); }, 500);
             }
         }
 
